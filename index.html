@@ -627,13 +627,24 @@
       // ─────────────────────────────────────────────────────────────────────────
       // Load JSON from file, then initialise
       // ─────────────────────────────────────────────────────────────────────────
+      // Fisher-Yates shuffle — returns a new shuffled array
+      function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+
       async function loadAlgorithms() {
         try {
           const response = await fetch("algorithms.json");
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const data = await response.json();
           currentAlgorithm = data.v2;
-          algorithmSteps = [...currentAlgorithm.steps];
+          // Shuffle so the Fix It Zone isn't already in the right order
+          algorithmSteps = shuffle(currentAlgorithm.steps);
           populateAlgorithm();
           createDraggableSteps();
         } catch (err) {
@@ -840,39 +851,57 @@
       // ─────────────────────────────────────────────────────────────────────────
       function checkOrder() {
         const feedback = document.getElementById("feedback");
-        const currentOrder = algorithmSteps.map((s) => s.id);
-        // Only compare against the non-bugged subset of the correct order
+
+        // Build the expected order: correctOrder filtered to only visible (non-bugged) steps
         const expectedOrder = currentAlgorithm.correctOrder.filter(
           (id) => !foundBugs.has(id),
         );
-        const isCorrect =
-          JSON.stringify(currentOrder) === JSON.stringify(expectedOrder);
+        const currentOrder = algorithmSteps.map((s) => s.id);
+
+        // If the student hasn't removed all bugs yet, warn them first
+        const allBugsFound = currentAlgorithm.steps
+          .filter((s) => s.hasBug)
+          .every((s) => foundBugs.has(s.id));
 
         feedback.className = "mt-4 p-4 rounded-xl";
-        if (isCorrect) {
+
+        if (!allBugsFound) {
+          feedback.style.backgroundColor = "rgba(234,179,8,0.1)";
+          feedback.style.border = "1px solid rgba(234,179,8,0.3)";
+          const remaining = currentAlgorithm.steps.filter(
+            (s) => s.hasBug && !foundBugs.has(s.id),
+          ).length;
+          feedback.innerHTML = `
+            <p style="color:#fcd34d"><strong>🐛 Not all bugs found yet!</strong></p>
+            <p style="color:#94a3b8" class="text-sm mt-1">
+              There are still <strong style="color:#fcd34d">${remaining}</strong> bug${remaining !== 1 ? "s" : ""} hiding in the left panel. Find them first, then reorder!
+            </p>`;
+        } else if (
+          JSON.stringify(currentOrder) === JSON.stringify(expectedOrder)
+        ) {
           feedback.style.backgroundColor = "rgba(34,197,94,0.1)";
           feedback.style.border = "1px solid rgba(34,197,94,0.3)";
           feedback.innerHTML = `
-            <p style="color:#4ade80"><strong>🎉 Perfect order!</strong></p>
+            <p style="color:#4ade80"><strong>🎉 Perfect — bugs found and correct order!</strong></p>
             <p style="color:#94a3b8" class="text-sm mt-1">
-              You've created a v3 algorithm that makes sense! Each step flows logically to the next.
+              You've identified all the bugs and put the remaining steps in the right order. That's a v3 algorithm!
             </p>`;
         } else {
           feedback.style.backgroundColor = "rgba(234,179,8,0.1)";
           feedback.style.border = "1px solid rgba(234,179,8,0.3)";
           feedback.innerHTML = `
-            <p style="color:#fcd34d"><strong>🤔 Not quite right yet!</strong></p>
+            <p style="color:#fcd34d"><strong>🤔 Bugs found, but order needs work!</strong></p>
             <p style="color:#94a3b8" class="text-sm mt-1">
-              Think about the logical flow. What needs to happen before something else? Try rearranging...
+              All bugs are ticked — nice! Now drag the remaining steps into the correct logical order.
             </p>`;
         }
         feedback.classList.remove("hidden");
       }
 
       function resetOrder() {
-        // Rebuild algorithmSteps from original order, excluding ticked bugs
-        algorithmSteps = currentAlgorithm.steps.filter(
-          (s) => !foundBugs.has(s.id),
+        // Re-shuffle the non-bugged steps so there's something to solve again
+        algorithmSteps = shuffle(
+          currentAlgorithm.steps.filter((s) => !foundBugs.has(s.id)),
         );
         createDraggableSteps();
         document.getElementById("feedback").classList.add("hidden");
