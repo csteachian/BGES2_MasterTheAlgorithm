@@ -1,6 +1,6 @@
 {
   "v2": {
-    "title": "Buggy Algorithm v2",
+    "title": "Buggy Algorithm v2 — Brushing Your Teeth",
     "description": "Can you spot the bugs in this toothbrushing algorithm?",
     "steps": [
       { "id": "s1", "text": "Walk to bathroom", "hasBug": false },
@@ -14,18 +14,148 @@
       { "id": "s5", "text": "Put toothbrush in mouth", "hasBug": false },
       { "id": "s6", "text": "Brush front teeth only", "hasBug": true },
       { "id": "s7", "text": "Brush for 10 seconds", "hasBug": true },
-      { "id": "s8", "text": "Skip the molars (back teeth)", "hasBug": true },
-      { "id": "s9", "text": "Forget to brush tongue", "hasBug": true },
-      { "id": "s10", "text": "Spit out toothpaste", "hasBug": false },
-      { "id": "s11", "text": "Don't rinse mouth", "hasBug": true },
-      { "id": "s12", "text": "Leave tap running", "hasBug": true },
+      { "id": "s8", "text": "Spit out toothpaste", "hasBug": false },
+      { "id": "s9", "text": "Rinse mouth with water", "hasBug": false },
+      { "id": "s10", "text": "Leave tap running and walk away", "hasBug": true }
+    ],
+    "correctOrder": ["s1", "s3", "s5", "s8", "s9"]
+  },
+
+  "scrambled_eggs": {
+    "title": "Buggy Algorithm — Making Scrambled Eggs",
+    "description": "Can you spot the bugs in this scrambled eggs algorithm?",
+    "steps": [
       {
-        "id": "s13",
-        "text": "Put toothbrush back... on the floor",
+        "id": "e1",
+        "text": "Crack 2 eggs directly into the frying pan",
         "hasBug": true
       },
-      { "id": "s14", "text": "Walk away without washing hands", "hasBug": true }
+      { "id": "e2", "text": "Crack 2 eggs into a bowl", "hasBug": false },
+      { "id": "e3", "text": "Add a pinch of salt and pepper", "hasBug": false },
+      { "id": "e4", "text": "Whisk the eggs until combined", "hasBug": false },
+      {
+        "id": "e5",
+        "text": "Turn on the hob to a medium heat",
+        "hasBug": false
+      },
+      {
+        "id": "e6",
+        "text": "Add butter to the pan and wait for it to melt",
+        "hasBug": false
+      },
+      { "id": "e7", "text": "Pour egg mixture into the pan", "hasBug": false },
+      {
+        "id": "e8",
+        "text": "Stir continuously for 30 seconds then serve",
+        "hasBug": false
+      },
+      { "id": "e9", "text": "Leave the hob on after cooking", "hasBug": true },
+      { "id": "e10", "text": "Season with salt after eating", "hasBug": true }
     ],
-    "correctOrder": ["s1", "s3", "s5", "s10"]
+    "correctOrder": ["e2", "e3", "e4", "e5", "e6", "e7", "e8"]
+  },
+
+  "send_text": {
+    "title": "Buggy Algorithm — Sending a Text Message",
+    "description": "Can you spot the bugs in this texting algorithm?",
+    "steps": [
+      { "id": "t1", "text": "Pick up your phone", "hasBug": false },
+      {
+        "id": "t2",
+        "text": "Type your message before unlocking the phone",
+        "hasBug": true
+      },
+      { "id": "t3", "text": "Unlock your phone", "hasBug": false },
+      { "id": "t4", "text": "Open the messages app", "hasBug": false },
+      {
+        "id": "t5",
+        "text": "Select the recipient from your contacts",
+        "hasBug": false
+      },
+      {
+        "id": "t6",
+        "text": "Press send before finishing your message",
+        "hasBug": true
+      },
+      { "id": "t7", "text": "Type your message", "hasBug": false },
+      { "id": "t8", "text": "Press send", "hasBug": false },
+      {
+        "id": "t9",
+        "text": "Close the app before the message has sent",
+        "hasBug": true
+      }
+    ],
+    "correctOrder": ["t1", "t3", "t4", "t5", "t7", "t8"]
+  },
+
+  "lock_bike": {
+    "title": "Buggy Algorithm — Locking Your Bike",
+    "description": "Can you spot the bugs in this bike locking algorithm?",
+    "steps": [
+      { "id": "b1", "text": "Ride to your destination", "hasBug": false },
+      {
+        "id": "b2",
+        "text": "Find something to lock your bike to",
+        "hasBug": false
+      },
+      {
+        "id": "b3",
+        "text": "Lock the bike to a nearby wooden fence panel",
+        "hasBug": true
+      },
+      {
+        "id": "b4",
+        "text": "Thread the lock through the frame and a fixed object",
+        "hasBug": false
+      },
+      { "id": "b5", "text": "Click the lock shut", "hasBug": false },
+      {
+        "id": "b6",
+        "text": "Walk away without checking the lock is secure",
+        "hasBug": true
+      },
+      {
+        "id": "b7",
+        "text": "Check the lock is secure by pulling the bike",
+        "hasBug": false
+      },
+      {
+        "id": "b8",
+        "text": "Leave your helmet hanging on the handlebars",
+        "hasBug": true
+      },
+      {
+        "id": "b9",
+        "text": "Take your helmet and belongings with you",
+        "hasBug": false
+      }
+    ],
+    "correctOrder": ["b1", "b2", "b4", "b5", "b7", "b9"]
+  },
+
+  "ready_for_school": {
+    "title": "Buggy Algorithm — Getting Ready for School",
+    "description": "Can you spot the bugs in this morning routine algorithm?",
+    "steps": [
+      { "id": "r1", "text": "Wake up and get out of bed", "hasBug": false },
+      {
+        "id": "r2",
+        "text": "Put your shoes on before your trousers",
+        "hasBug": true
+      },
+      { "id": "r3", "text": "Get dressed", "hasBug": false },
+      { "id": "r4", "text": "Eat breakfast", "hasBug": false },
+      { "id": "r5", "text": "Brush your teeth", "hasBug": false },
+      { "id": "r6", "text": "Pack your school bag", "hasBug": false },
+      {
+        "id": "r7",
+        "text": "Pack your school bag after arriving at school",
+        "hasBug": true
+      },
+      { "id": "r8", "text": "Put on your shoes and coat", "hasBug": false },
+      { "id": "r9", "text": "Leave the house", "hasBug": false },
+      { "id": "r10", "text": "Eat breakfast on the bus", "hasBug": true }
+    ],
+    "correctOrder": ["r1", "r3", "r4", "r5", "r6", "r8", "r9"]
   }
 }

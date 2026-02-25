@@ -380,8 +380,8 @@
             >
               The Challenge: Buggy Algorithm v2
             </h2>
-            <p style="color: #94a3b8">
-              Can you spot the bugs in this toothbrushing algorithm?
+            <p id="challenge-description" style="color: #94a3b8">
+              Can you spot the bugs in this algorithm?
             </p>
           </div>
           <div class="grid lg:grid-cols-2 gap-8">
@@ -406,16 +406,20 @@
                   class="w-3 h-3 rounded-full"
                   style="background-color: #22c55e"
                 ></span>
-                <span class="ml-2 code-font text-sm" style="color: #94a3b8"
-                  >toothbrush_v2.algo</span
+                <span
+                  class="ml-2 code-font text-sm"
+                  id="algo-filename"
+                  style="color: #94a3b8"
+                  >algorithm_v2.algo</span
                 >
               </div>
               <div class="p-6">
                 <h3
+                  id="algo-panel-title"
                   class="font-bold mb-4 flex items-center gap-2"
                   style="color: #ffffff"
                 >
-                  <span>🦷</span> How to brush your teeth (v2)
+                  Algorithm steps (v2)
                 </h3>
                 <div
                   class="space-y-2 code-font text-sm"
@@ -633,7 +637,24 @@
           const response = await fetch("algorithms.json");
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const data = await response.json();
-          currentAlgorithm = data.v2;
+
+          // Pick a random algorithm from the available keys
+          const keys = Object.keys(data);
+          const randomKey = keys[Math.floor(Math.random() * keys.length)];
+          currentAlgorithm = data[randomKey];
+
+          // Update page headings to match the chosen algorithm
+          document.getElementById("challenge-heading").textContent =
+            currentAlgorithm.title;
+          document.getElementById("challenge-description").textContent =
+            currentAlgorithm.description;
+          document.getElementById("algo-filename").textContent =
+            randomKey.replace(/_/g, "-") + "_v2.algo";
+          document.getElementById("algo-panel-title").textContent =
+            currentAlgorithm.title
+              .replace("Buggy Algorithm", "Algorithm")
+              .replace("Buggy Algorithm v2 —", "Algorithm:");
+
           // Start with ALL steps in original order — bugs vanish as they are ticked
           algorithmSteps = [...currentAlgorithm.steps];
           populateAlgorithm();
