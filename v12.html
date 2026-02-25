@@ -1,0 +1,981 @@
+<!doctype html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BGE Computing Science: Master the Algorithm</title>
+    <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+    <script src="/_sdk/element_sdk.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        font-family: "Space Grotesk", sans-serif;
+      }
+      .code-font {
+        font-family: "JetBrains Mono", monospace;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes pulse-glow {
+        0%,
+        100% {
+          box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+        }
+        50% {
+          box-shadow: 0 0 40px rgba(34, 197, 94, 0.6);
+        }
+      }
+
+      @keyframes slide-in {
+        from {
+          opacity: 0;
+          transform: translateX(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+
+      .float-animation {
+        animation: float 3s ease-in-out infinite;
+      }
+      .pulse-glow {
+        animation: pulse-glow 2s ease-in-out infinite;
+      }
+      .slide-in {
+        animation: slide-in 0.5s ease-out forwards;
+      }
+
+      .bug-item {
+        position: relative;
+      }
+      .bug-item::before {
+        content: "🐛";
+        position: absolute;
+        left: -30px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+      .bug-item.has-bug::before {
+        opacity: 1;
+      }
+
+      .grid-pattern {
+        background-image:
+          linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+      }
+
+      .cornerstone-card {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      }
+      .cornerstone-card:hover {
+        transform: translateY(-8px) scale(1.02);
+      }
+    </style>
+    <style>
+      body {
+        box-sizing: border-box;
+      }
+    </style>
+    <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  </head>
+  <body class="h-full">
+    <div
+      id="app-wrapper"
+      class="w-full h-full overflow-auto grid-pattern"
+      style="background-color: #0f172a"
+    >
+      <!-- Header -->
+      <header
+        class="relative overflow-hidden py-16 px-6"
+        style="
+          background: linear-gradient(
+            135deg,
+            #1e3a5f 0%,
+            #0f172a 50%,
+            #064e3b 100%
+          );
+        "
+      >
+        <div class="absolute inset-0 opacity-20">
+          <div
+            class="absolute top-10 left-10 text-6xl float-animation"
+            style="animation-delay: 0s"
+          >
+            💻
+          </div>
+          <div
+            class="absolute top-20 right-20 text-5xl float-animation"
+            style="animation-delay: 0.5s"
+          >
+            🧠
+          </div>
+          <div
+            class="absolute bottom-10 left-1/4 text-4xl float-animation"
+            style="animation-delay: 1s"
+          >
+            ⚡
+          </div>
+          <div
+            class="absolute bottom-20 right-1/3 text-5xl float-animation"
+            style="animation-delay: 1.5s"
+          >
+            🔧
+          </div>
+        </div>
+        <div class="max-w-4xl mx-auto text-center relative z-10">
+          <div
+            class="inline-block px-4 py-2 rounded-full text-sm font-medium mb-6"
+            style="
+              background-color: rgba(34, 197, 94, 0.2);
+              color: #4ade80;
+              border: 1px solid rgba(34, 197, 94, 0.3);
+            "
+          >
+            BGE Computing Science
+          </div>
+          <h1
+            id="main-title"
+            class="text-4xl md:text-6xl font-bold mb-4"
+            style="
+              color: #ffffff;
+              text-shadow: 0 0 40px rgba(59, 130, 246, 0.5);
+            "
+          >
+            Master the Algorithm
+          </h1>
+          <p class="text-xl opacity-80" style="color: #94a3b8">
+            Learn to think like a computer scientist
+          </p>
+        </div>
+      </header>
+      <!-- Introduction Section -->
+      <section class="py-16 px-6">
+        <div class="max-w-3xl mx-auto">
+          <div
+            class="rounded-2xl p-8 border"
+            style="background-color: #1e293b; border-color: #334155"
+          >
+            <div class="flex items-center gap-3 mb-6">
+              <span class="text-3xl">🤔</span>
+              <h2
+                id="intro-heading"
+                class="text-2xl font-bold"
+                style="color: #ffffff"
+              >
+                The Complex Problem
+              </h2>
+            </div>
+            <p class="text-lg leading-relaxed mb-6" style="color: #cbd5e1">
+              A <strong style="color: #60a5fa">complex problem</strong> is one
+              we don't know how to solve easily at first glance. It might seem
+              overwhelming, confusing, or just plain tricky! But here's the
+              secret: every complex problem can be solved if we approach it the
+              right way.
+            </p>
+            <p class="text-lg leading-relaxed mb-8" style="color: #cbd5e1">
+              Computer scientists use a special toolkit called
+              <strong style="color: #4ade80">Computational Thinking</strong> to
+              tackle these challenges. It's not about being a genius — it's
+              about having the right strategy!
+            </p>
+            <button
+              onclick="
+                document
+                  .getElementById('cornerstones')
+                  .scrollIntoView({ behavior: 'smooth' })
+              "
+              class="group flex items-center gap-2 px-6 py-3 rounded-xl font-semibold transition-all pulse-glow"
+              style="background-color: #22c55e; color: #052e16"
+            >
+              Let's break it down!
+              <span class="group-hover:translate-x-1 transition-transform"
+                >→</span
+              >
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- Four Cornerstones Section -->
+      <section
+        id="cornerstones"
+        class="py-16 px-6"
+        style="background-color: rgba(30, 58, 95, 0.3)"
+      >
+        <div class="max-w-5xl mx-auto">
+          <div class="text-center mb-12">
+            <span class="text-4xl mb-4 block">🏛️</span>
+            <h2 class="text-3xl font-bold mb-2" style="color: #ffffff">
+              The Four Cornerstones
+            </h2>
+            <p style="color: #94a3b8">of Computational Thinking</p>
+          </div>
+          <div class="grid md:grid-cols-2 gap-6">
+            <!-- Decomposition -->
+            <div
+              class="cornerstone-card rounded-2xl p-6 border cursor-pointer"
+              style="
+                background: linear-gradient(135deg, #1e3a5f 0%, #1e293b 100%);
+                border-color: #3b82f6;
+              "
+              onclick="this.querySelector('.detail').classList.toggle('hidden')"
+            >
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                  style="background-color: rgba(59, 130, 246, 0.2)"
+                >
+                  🧩
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-2" style="color: #60a5fa">
+                    Decomposition
+                  </h3>
+                  <p style="color: #cbd5e1">
+                    Breaking down a complex problem into small, manageable
+                    parts.
+                  </p>
+                  <div
+                    class="detail hidden mt-4 pt-4 border-t"
+                    style="border-color: #334155"
+                  >
+                    <p class="text-sm" style="color: #94a3b8">
+                      <strong>Example:</strong> Building a house → Foundation,
+                      walls, roof, plumbing, electrical... Each part is easier
+                      to handle alone!
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Pattern Recognition -->
+            <div
+              class="cornerstone-card rounded-2xl p-6 border cursor-pointer"
+              style="
+                background: linear-gradient(135deg, #064e3b 0%, #1e293b 100%);
+                border-color: #22c55e;
+              "
+              onclick="this.querySelector('.detail').classList.toggle('hidden')"
+            >
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                  style="background-color: rgba(34, 197, 94, 0.2)"
+                >
+                  🔍
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-2" style="color: #4ade80">
+                    Pattern Recognition
+                  </h3>
+                  <p style="color: #cbd5e1">
+                    Looking at how similar problems were solved previously.
+                  </p>
+                  <div
+                    class="detail hidden mt-4 pt-4 border-t"
+                    style="border-color: #334155"
+                  >
+                    <p class="text-sm" style="color: #94a3b8">
+                      <strong>Example:</strong> "This math problem looks like
+                      one I solved yesterday!" Spotting patterns saves time and
+                      effort.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Abstraction -->
+            <div
+              class="cornerstone-card rounded-2xl p-6 border cursor-pointer"
+              style="
+                background: linear-gradient(135deg, #4c1d95 0%, #1e293b 100%);
+                border-color: #a855f7;
+              "
+              onclick="this.querySelector('.detail').classList.toggle('hidden')"
+            >
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                  style="background-color: rgba(168, 85, 247, 0.2)"
+                >
+                  🎯
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-2" style="color: #c084fc">
+                    Abstraction
+                  </h3>
+                  <p style="color: #cbd5e1">
+                    Focusing only on important details and ignoring irrelevant
+                    info.
+                  </p>
+                  <div
+                    class="detail hidden mt-4 pt-4 border-t"
+                    style="border-color: #334155"
+                  >
+                    <p class="text-sm" style="color: #94a3b8">
+                      <strong>Example:</strong> A map doesn't show every tree —
+                      just the roads you need! Filter out the noise to see
+                      clearly.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- Algorithms -->
+            <div
+              class="cornerstone-card rounded-2xl p-6 border cursor-pointer"
+              style="
+                background: linear-gradient(135deg, #9a3412 0%, #1e293b 100%);
+                border-color: #f97316;
+              "
+              onclick="this.querySelector('.detail').classList.toggle('hidden')"
+            >
+              <div class="flex items-start gap-4">
+                <div
+                  class="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
+                  style="background-color: rgba(249, 115, 22, 0.2)"
+                >
+                  📝
+                </div>
+                <div>
+                  <h3 class="text-xl font-bold mb-2" style="color: #fb923c">
+                    Algorithms
+                  </h3>
+                  <p style="color: #cbd5e1">
+                    Developing the step-by-step rules to solve the problem.
+                  </p>
+                  <div
+                    class="detail hidden mt-4 pt-4 border-t"
+                    style="border-color: #334155"
+                  >
+                    <p class="text-sm" style="color: #94a3b8">
+                      <strong>Example:</strong> A recipe is an algorithm! Step
+                      1, Step 2, Step 3... Follow the instructions precisely.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- The Challenge Section -->
+      <section class="py-16 px-6">
+        <div class="max-w-4xl mx-auto">
+          <div class="text-center mb-12">
+            <span class="text-4xl mb-4 block">🐛</span>
+            <h2
+              id="challenge-heading"
+              class="text-3xl font-bold mb-2"
+              style="color: #ffffff"
+            >
+              The Challenge: Buggy Algorithm v2
+            </h2>
+            <p style="color: #94a3b8">
+              Can you spot the bugs in this toothbrushing algorithm?
+            </p>
+          </div>
+          <div class="grid lg:grid-cols-2 gap-8">
+            <!-- Buggy Algorithm -->
+            <div
+              class="rounded-2xl border overflow-hidden"
+              style="background-color: #1e293b; border-color: #334155"
+            >
+              <div
+                class="px-6 py-4 border-b flex items-center gap-2"
+                style="background-color: #0f172a; border-color: #334155"
+              >
+                <span
+                  class="w-3 h-3 rounded-full"
+                  style="background-color: #ef4444"
+                ></span>
+                <span
+                  class="w-3 h-3 rounded-full"
+                  style="background-color: #eab308"
+                ></span>
+                <span
+                  class="w-3 h-3 rounded-full"
+                  style="background-color: #22c55e"
+                ></span>
+                <span class="ml-2 code-font text-sm" style="color: #94a3b8"
+                  >toothbrush_v2.algo</span
+                >
+              </div>
+              <div class="p-6">
+                <h3
+                  class="font-bold mb-4 flex items-center gap-2"
+                  style="color: #ffffff"
+                >
+                  <span>🦷</span> How to brush your teeth (v2)
+                </h3>
+                <div class="space-y-2 code-font text-sm" id="algorithm-list">
+                  <!-- Steps will be populated by JavaScript -->
+                </div>
+                <div
+                  class="mt-6 p-4 rounded-xl"
+                  style="
+                    background-color: rgba(59, 130, 246, 0.1);
+                    border: 1px solid rgba(59, 130, 246, 0.3);
+                  "
+                >
+                  <p class="text-sm" style="color: #93c5fd">
+                    <strong>🐛 Can you spot the bugs?</strong> <br /><span
+                      style="color: #94a3b8"
+                      >Click steps you think are wrong.</span
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+            <!-- Fix It Area -->
+            <div
+              class="rounded-2xl border"
+              style="background-color: #1e293b; border-color: #334155"
+            >
+              <div
+                class="px-6 py-4 border-b flex items-center gap-2"
+                style="background-color: #064e3b; border-color: #334155"
+              >
+                <span class="text-xl">🔧</span>
+                <span class="font-semibold" style="color: #4ade80"
+                  >Fix It Zone: Reorder v3</span
+                >
+              </div>
+              <div class="p-6">
+                <p class="mb-4" style="color: #cbd5e1">
+                  Drag the steps below to create the
+                  <strong style="color: #4ade80">correct order</strong> for
+                  brushing teeth properly!
+                </p>
+                <div
+                  id="correct-steps-area"
+                  class="space-y-2 mb-4 min-h-64 rounded-xl p-4 border-2 border-dashed"
+                  style="
+                    background-color: rgba(34, 197, 94, 0.05);
+                    border-color: rgba(34, 197, 94, 0.3);
+                  "
+                >
+                  <p
+                    style="
+                      color: #94a3b8;
+                      text-align: center;
+                      padding-top: 80px;
+                    "
+                  >
+                    Drag steps here to reorganize...
+                  </p>
+                </div>
+                <div class="flex gap-3 mt-4">
+                  <button
+                    onclick="checkOrder()"
+                    class="flex-1 px-4 py-3 rounded-xl font-semibold transition-all hover:scale-105"
+                    style="background-color: #22c55e; color: #052e16"
+                  >
+                    ✓ Check Order
+                  </button>
+                  <button
+                    onclick="resetOrder()"
+                    class="px-4 py-3 rounded-xl font-semibold transition-all hover:scale-105"
+                    style="background-color: #334155; color: #94a3b8"
+                  >
+                    ↺ Reset
+                  </button>
+                </div>
+                <div id="feedback" class="mt-4 hidden"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <!-- Tips Section -->
+      <section
+        class="py-12 px-6"
+        style="background-color: rgba(30, 58, 95, 0.3)"
+      >
+        <div class="max-w-3xl mx-auto">
+          <div
+            class="rounded-2xl p-6 border"
+            style="background-color: #1e293b; border-color: #334155"
+          >
+            <h3
+              class="font-bold mb-4 flex items-center gap-2"
+              style="color: #ffffff"
+            >
+              <span>💡</span> Tips for Writing Good Algorithms
+            </h3>
+            <ul class="space-y-3" style="color: #cbd5e1">
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style="background-color: #3b82f6; color: white"
+                  >1</span
+                >
+                <span
+                  >Be <strong style="color: #60a5fa">specific</strong> — "Apply
+                  pea-sized amount" is better than "Apply toothpaste"</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style="background-color: #22c55e; color: white"
+                  >2</span
+                >
+                <span
+                  >Use
+                  <strong style="color: #4ade80">exact numbers</strong> where
+                  needed — "Brush for 2 minutes" not "Brush for a while"</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style="background-color: #a855f7; color: white"
+                  >3</span
+                >
+                <span
+                  >Make sure steps are in the
+                  <strong style="color: #c084fc">correct order</strong> — You
+                  can't rinse before brushing!</span
+                >
+              </li>
+              <li class="flex items-start gap-3">
+                <span
+                  class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                  style="background-color: #f97316; color: white"
+                  >4</span
+                >
+                <span
+                  >Don't
+                  <strong style="color: #fb923c">skip important steps</strong> —
+                  Every tooth matters!</span
+                >
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+      <!-- Footer -->
+      <footer
+        class="py-12 px-6 text-center"
+        style="background-color: #0f172a; border-top: 1px solid #334155"
+      >
+        <div class="max-w-2xl mx-auto">
+          <div class="text-4xl mb-4">🚀</div>
+          <p
+            id="footer-text"
+            class="text-lg font-medium mb-2"
+            style="color: #ffffff"
+          >
+            Once these steps are perfect, we use them to program a computer!
+          </p>
+          <p style="color: #64748b">
+            Computational thinking is the foundation of all programming. Master
+            these skills, and you'll be ready to create amazing things!
+          </p>
+          <div class="mt-6 flex justify-center gap-4">
+            <span
+              class="px-3 py-1 rounded-full text-xs"
+              style="background-color: #1e3a5f; color: #60a5fa"
+              >BGE Computing</span
+            >
+            <span
+              class="px-3 py-1 rounded-full text-xs"
+              style="background-color: #064e3b; color: #4ade80"
+              >Scotland</span
+            >
+            <span
+              class="px-3 py-1 rounded-full text-xs"
+              style="background-color: #4c1d95; color: #c084fc"
+              >Level 3/4</span
+            >
+          </div>
+        </div>
+      </footer>
+    </div>
+    <script>
+      // Algorithm data structure - easy to edit and extend
+      const algorithms = {
+        v2: {
+          title: "Buggy Algorithm v2",
+          description: "Can you spot the bugs in this toothbrushing algorithm?",
+          steps: [
+            { id: "s1", text: "Walk to bathroom", hasBug: false },
+            { id: "s2", text: "Turn on tap to full blast", hasBug: true },
+            { id: "s3", text: "Pick up toothbrush", hasBug: false },
+            {
+              id: "s4",
+              text: "Squeeze HALF the tube of toothpaste onto brush",
+              hasBug: true,
+            },
+            { id: "s5", text: "Put toothbrush in mouth", hasBug: false },
+            { id: "s6", text: "Brush front teeth only", hasBug: true },
+            { id: "s7", text: "Brush for 10 seconds", hasBug: true },
+            { id: "s8", text: "Skip the molars (back teeth)", hasBug: true },
+            { id: "s9", text: "Forget to brush tongue", hasBug: true },
+            { id: "s10", text: "Spit out toothpaste", hasBug: false },
+            { id: "s11", text: "Don't rinse mouth", hasBug: true },
+            { id: "s12", text: "Leave tap running", hasBug: true },
+            {
+              id: "s13",
+              text: "Put toothbrush back... on the floor",
+              hasBug: true,
+            },
+            {
+              id: "s14",
+              text: "Walk away without washing hands",
+              hasBug: true,
+            },
+          ],
+          // Correct order as array of step IDs
+          correctOrder: [
+            "s3",
+            "s2",
+            "s1",
+            "s4",
+            "s5",
+            "s7",
+            "s6",
+            "s8",
+            "s9",
+            "s10",
+            "s11",
+            "s12",
+            "s13",
+            "s14",
+          ],
+        },
+      };
+
+      // Set current algorithm
+      const currentAlgorithm = algorithms.v2;
+      let algorithmSteps = [...currentAlgorithm.steps];
+
+      let foundBugs = new Set();
+      let draggedElement = null;
+
+      // Populate algorithm list
+      function populateAlgorithm() {
+        const list = document.getElementById("algorithm-list");
+        list.innerHTML = algorithmSteps
+          .map(
+            (step, index) => `
+        <div class="bug-item flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-slate-700/50"
+             onclick="toggleBug('${step.id}')"
+             id="step-${step.id}"
+             data-has-bug="${step.hasBug}">
+          <input type="checkbox" 
+                 class="w-5 h-5 rounded accent-green-500 pointer-events-none"
+                 ${foundBugs.has(step.id) && step.hasBug ? "checked" : ""}>
+          <span class="opacity-50">${index + 1}.</span>
+          <span style="color: #cbd5e1;">
+            ${step.text}
+          </span>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function toggleBug(stepId) {
+        const step = algorithmSteps.find((s) => s.id === stepId);
+        if (step && step.hasBug) {
+          if (foundBugs.has(stepId)) {
+            foundBugs.delete(stepId);
+          } else {
+            foundBugs.add(stepId);
+          }
+          populateAlgorithm();
+        }
+      }
+
+      // Create draggable steps for reordering
+      function createDraggableSteps() {
+        const area = document.getElementById("correct-steps-area");
+        area.innerHTML = "";
+        area.className =
+          "space-y-2 mb-4 rounded-xl p-4 border-2 border-dashed min-h-64" +
+          " draggable-area";
+        area.style.cssText =
+          "background-color: rgba(34, 197, 94, 0.05); border-color: rgba(34, 197, 94, 0.3);";
+
+        algorithmSteps.forEach((step) => {
+          const stepEl = document.createElement("div");
+          stepEl.className =
+            "draggable-step p-3 rounded-lg cursor-move transition-all border";
+          stepEl.style.cssText =
+            "background-color: #334155; border-color: #475569; color: #cbd5e1;";
+          stepEl.draggable = true;
+          stepEl.dataset.stepId = step.id;
+          stepEl.innerHTML = `<span class="opacity-50">${algorithmSteps.indexOf(step) + 1}.</span> ${step.text}`;
+
+          stepEl.addEventListener("dragstart", dragStart);
+          stepEl.addEventListener("dragend", dragEnd);
+          stepEl.addEventListener("dragover", dragOver);
+          stepEl.addEventListener("drop", dragDrop);
+          stepEl.addEventListener("dragenter", dragEnter);
+          stepEl.addEventListener("dragleave", dragLeave);
+
+          area.appendChild(stepEl);
+        });
+      }
+
+      function dragStart(e) {
+        draggedElement = this;
+        this.style.opacity = "0.5";
+        e.dataTransfer.effectAllowed = "move";
+      }
+
+      function dragEnd(e) {
+        this.style.opacity = "1";
+        document.querySelectorAll(".draggable-step").forEach((el) => {
+          el.style.backgroundColor = "#334155";
+          el.style.borderColor = "#475569";
+        });
+      }
+
+      function dragOver(e) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "move";
+        return false;
+      }
+
+      function dragEnter(e) {
+        if (this !== draggedElement) {
+          this.style.backgroundColor = "#4ade80";
+          this.style.borderColor = "#22c55e";
+        }
+      }
+
+      function dragLeave(e) {
+        if (this !== draggedElement) {
+          this.style.backgroundColor = "#334155";
+          this.style.borderColor = "#475569";
+        }
+      }
+
+      function dragDrop(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (this !== draggedElement) {
+          const draggedStepId = draggedElement.dataset.stepId;
+          const targetStepId = this.dataset.stepId;
+
+          const draggedIndex = algorithmSteps.findIndex(
+            (s) => s.id === draggedStepId,
+          );
+          const targetIndex = algorithmSteps.findIndex(
+            (s) => s.id === targetStepId,
+          );
+
+          const temp = algorithmSteps[draggedIndex];
+          algorithmSteps[draggedIndex] = algorithmSteps[targetIndex];
+          algorithmSteps[targetIndex] = temp;
+
+          createDraggableSteps();
+        }
+        return false;
+      }
+
+      function checkOrder() {
+        const feedback = document.getElementById("feedback");
+
+        // Get current order of step IDs
+        const currentOrder = algorithmSteps.map((s) => s.id);
+        const correctOrder = currentAlgorithm.correctOrder;
+
+        // Check if current order matches correct order
+        const isCorrect =
+          JSON.stringify(currentOrder) === JSON.stringify(correctOrder);
+
+        if (isCorrect) {
+          feedback.className = "mt-4 p-4 rounded-xl";
+          feedback.style.backgroundColor = "rgba(34, 197, 94, 0.1)";
+          feedback.style.border = "1px solid rgba(34, 197, 94, 0.3)";
+          feedback.innerHTML = `
+          <p style="color: #4ade80;"><strong>🎉 Perfect order!</strong></p>
+          <p style="color: #94a3b8;" class="text-sm mt-1">You've created a v3 algorithm that makes sense! Each step flows logically to the next.</p>
+        `;
+        } else {
+          feedback.className = "mt-4 p-4 rounded-xl";
+          feedback.style.backgroundColor = "rgba(234, 179, 8, 0.1)";
+          feedback.style.border = "1px solid rgba(234, 179, 8, 0.3)";
+          feedback.innerHTML = `
+          <p style="color: #fcd34d;"><strong>🤔 Not quite right yet!</strong></p>
+          <p style="color: #94a3b8;" class="text-sm mt-1">Think about the logical flow. What needs to happen before something else? Try rearranging...</p>
+        `;
+        }
+        feedback.classList.remove("hidden");
+      }
+
+      function resetOrder() {
+        algorithmSteps.sort((a, b) => a.num - b.num);
+        createDraggableSteps();
+        document.getElementById("feedback").classList.add("hidden");
+      }
+
+      // Default configuration
+      const defaultConfig = {
+        main_title: "Master the Algorithm",
+        intro_heading: "The Complex Problem",
+        challenge_heading: "The Challenge: Buggy Algorithm v2",
+        footer_text:
+          "Once these steps are perfect, we use them to program a computer!",
+        background_color: "#0f172a",
+        surface_color: "#1e293b",
+        text_color: "#ffffff",
+        primary_action_color: "#22c55e",
+        accent_color: "#3b82f6",
+      };
+
+      // Initialize SDK
+      if (window.elementSdk) {
+        window.elementSdk.init({
+          defaultConfig,
+          onConfigChange: async (config) => {
+            document.getElementById("main-title").textContent =
+              config.main_title || defaultConfig.main_title;
+            document.getElementById("intro-heading").textContent =
+              config.intro_heading || defaultConfig.intro_heading;
+            document.getElementById("challenge-heading").textContent =
+              config.challenge_heading || defaultConfig.challenge_heading;
+            document.getElementById("footer-text").textContent =
+              config.footer_text || defaultConfig.footer_text;
+
+            // Apply colors
+            const bgColor =
+              config.background_color || defaultConfig.background_color;
+            const surfaceColor =
+              config.surface_color || defaultConfig.surface_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryColor =
+              config.primary_action_color || defaultConfig.primary_action_color;
+            const accentColor =
+              config.accent_color || defaultConfig.accent_color;
+
+            document.getElementById("app-wrapper").style.backgroundColor =
+              bgColor;
+            document.querySelectorAll("[data-surface]").forEach((el) => {
+              el.style.backgroundColor = surfaceColor;
+            });
+          },
+          mapToCapabilities: (config) => ({
+            recolorables: [
+              {
+                get: () =>
+                  config.background_color || defaultConfig.background_color,
+                set: (value) => {
+                  config.background_color = value;
+                  window.elementSdk.setConfig({ background_color: value });
+                },
+              },
+              {
+                get: () => config.surface_color || defaultConfig.surface_color,
+                set: (value) => {
+                  config.surface_color = value;
+                  window.elementSdk.setConfig({ surface_color: value });
+                },
+              },
+              {
+                get: () => config.text_color || defaultConfig.text_color,
+                set: (value) => {
+                  config.text_color = value;
+                  window.elementSdk.setConfig({ text_color: value });
+                },
+              },
+              {
+                get: () =>
+                  config.primary_action_color ||
+                  defaultConfig.primary_action_color,
+                set: (value) => {
+                  config.primary_action_color = value;
+                  window.elementSdk.setConfig({ primary_action_color: value });
+                },
+              },
+              {
+                get: () => config.accent_color || defaultConfig.accent_color,
+                set: (value) => {
+                  config.accent_color = value;
+                  window.elementSdk.setConfig({ accent_color: value });
+                },
+              },
+            ],
+            borderables: [],
+            fontEditable: undefined,
+            fontSizeable: undefined,
+          }),
+          mapToEditPanelValues: (config) =>
+            new Map([
+              ["main_title", config.main_title || defaultConfig.main_title],
+              [
+                "intro_heading",
+                config.intro_heading || defaultConfig.intro_heading,
+              ],
+              [
+                "challenge_heading",
+                config.challenge_heading || defaultConfig.challenge_heading,
+              ],
+              ["footer_text", config.footer_text || defaultConfig.footer_text],
+            ]),
+        });
+      }
+
+      // Initialize on load
+      populateAlgorithm();
+      createDraggableSteps();
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'9d3a10f455993771',t:'MTc3MjA1MjUzNC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
