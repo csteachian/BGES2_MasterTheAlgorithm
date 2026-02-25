@@ -431,8 +431,10 @@
                   <p class="text-sm" style="color: #93c5fd">
                     <strong>🐛 Can you spot the bugs?</strong><br />
                     <span style="color: #94a3b8"
-                      >Tick the steps you think are wrong — they'll be removed
-                      from the Fix It Zone. Untick to put them back.</span
+                      >Tick any step you think is wrong.
+                      <span style="color: #4ade80">Green = correct bug</span>,
+                      <span style="color: #f87171">red = not a bug</span>. Bugs
+                      are removed from the Fix It Zone.</span
                     >
                   </p>
                 </div>
@@ -644,59 +646,104 @@
       // ─────────────────────────────────────────────────────────────────────────
       // Bug-spotting list (left panel)
       // ─────────────────────────────────────────────────────────────────────────
+
+      // Tracks ALL ticked steps (bugs and non-bugs alike)
+      let tickedSteps = new Set();
+
       function populateAlgorithm() {
         const list = document.getElementById("algorithm-list");
         list.innerHTML = currentAlgorithm.steps
           .map((step, index) => {
-            const isTicked = foundBugs.has(step.id);
+            const isTicked = tickedSteps.has(step.id);
+
+            // Determine highlight style
+            let rowStyle = "";
+            let textClass = "";
+            let labelIcon = "";
+
+            if (isTicked) {
+              if (step.hasBug) {
+                // Correct — green
+                rowStyle =
+                  "background-color:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);";
+                textClass = "step-bugged"; // strikethrough + dim
+                labelIcon =
+                  ' <span style="color:#4ade80;font-size:0.75rem;">✓ Bug!</span>';
+              } else {
+                // Wrong — red
+                rowStyle =
+                  "background-color:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);";
+                textClass = "";
+                labelIcon =
+                  ' <span style="color:#f87171;font-size:0.75rem;">✗ Not a bug</span>';
+              }
+            } else {
+              rowStyle = "border:1px solid transparent;";
+            }
+
             return `
-              <div class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all hover:bg-slate-700/50"
+              <div class="flex items-center gap-3 p-3 rounded-lg cursor-pointer transition-all"
                    onclick="toggleBug('${step.id}')"
-                   id="step-${step.id}">
+                   id="step-${step.id}"
+                   style="${rowStyle}">
                 <input type="checkbox"
-                       class="w-5 h-5 rounded accent-green-500 pointer-events-none"
+                       class="w-5 h-5 rounded pointer-events-none"
+                       style="accent-color:${isTicked && step.hasBug ? "#22c55e" : isTicked ? "#ef4444" : "#94a3b8"}"
                        ${isTicked ? "checked" : ""}>
                 <span class="opacity-50 code-font">${index + 1}.</span>
-                <span class="${isTicked ? "step-bugged" : ""}" style="color:#cbd5e1">
-                  ${step.text}
+                <span class="${textClass}" style="color:#cbd5e1;">
+                  ${step.text}${labelIcon}
                 </span>
               </div>`;
           })
           .join("");
       }
 
-      // Toggle a bug tick — syncs drag/drop area immediately
+      // Toggle a step tick:
+      //   - Real bugs:     tick removes from drag area (green highlight), untick restores
+      //   - Non-bugs:      tick shows red "not a bug" feedback only, no drag area change
       function toggleBug(stepId) {
         const step = currentAlgorithm.steps.find((s) => s.id === stepId);
-        if (!step || !step.hasBug) return; // only real bugs are ticked
+        if (!step) return;
 
-        if (foundBugs.has(stepId)) {
+        if (tickedSteps.has(stepId)) {
+          // Unticking
+          tickedSteps.delete(stepId);
           foundBugs.delete(stepId);
-          // Re-insert step into algorithmSteps at its original position
-          const originalIndex = currentAlgorithm.steps.findIndex(
-            (s) => s.id === stepId,
-          );
-          // Find best insertion point: after the last visible step that appears before it originally
-          let insertAt = algorithmSteps.length;
-          for (let i = originalIndex - 1; i >= 0; i--) {
-            const prevId = currentAlgorithm.steps[i].id;
-            const posInCurrent = algorithmSteps.findIndex(
-              (s) => s.id === prevId,
+
+          if (step.hasBug) {
+            // Re-insert into drag area at best relative position
+            const originalIndex = currentAlgorithm.steps.findIndex(
+              (s) => s.id === stepId,
             );
-            if (posInCurrent !== -1) {
-              insertAt = posInCurrent + 1;
-              break;
+            let insertAt = algorithmSteps.length;
+            for (let i = originalIndex - 1; i >= 0; i--) {
+              const prevId = currentAlgorithm.steps[i].id;
+              const posInCurrent = algorithmSteps.findIndex(
+                (s) => s.id === prevId,
+              );
+              if (posInCurrent !== -1) {
+                insertAt = posInCurrent + 1;
+                break;
+              }
             }
+            algorithmSteps.splice(insertAt, 0, step);
+            createDraggableSteps();
           }
-          algorithmSteps.splice(insertAt, 0, step);
         } else {
-          foundBugs.add(stepId);
-          // Remove from drag/drop list
-          algorithmSteps = algorithmSteps.filter((s) => s.id !== stepId);
+          // Ticking
+          tickedSteps.add(stepId);
+
+          if (step.hasBug) {
+            foundBugs.add(stepId);
+            // Remove from drag area
+            algorithmSteps = algorithmSteps.filter((s) => s.id !== stepId);
+            createDraggableSteps();
+          }
+          // Non-bugs: just highlight red, no drag area change
         }
 
         populateAlgorithm();
-        createDraggableSteps();
         document.getElementById("feedback").classList.add("hidden");
       }
 
