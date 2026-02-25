@@ -26,21 +26,6 @@
       },
       { "id": "s14", "text": "Walk away without washing hands", "hasBug": true }
     ],
-    "correctOrder": [
-      "s3",
-      "s2",
-      "s1",
-      "s4",
-      "s5",
-      "s7",
-      "s6",
-      "s8",
-      "s9",
-      "s10",
-      "s11",
-      "s12",
-      "s13",
-      "s14"
-    ]
+    "correctOrder": ["s1", "s3", "s5", "s10"]
   }
 }

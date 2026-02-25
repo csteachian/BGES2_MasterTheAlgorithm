@@ -620,33 +620,22 @@
       // State
       // ─────────────────────────────────────────────────────────────────────────
       let currentAlgorithm = null; // loaded from algorithms.json
-      let algorithmSteps = []; // working copy (current drag order)
-      let foundBugs = new Set(); // IDs the student has ticked as bugs
+      let algorithmSteps = []; // working copy — all steps minus ticked bugs
+      let tickedBugs = new Set(); // IDs the student has correctly ticked as bugs
+      let wrongTicks = new Set(); // IDs incorrectly ticked (not a bug)
       let draggedElement = null;
 
       // ─────────────────────────────────────────────────────────────────────────
       // Load JSON from file, then initialise
       // ─────────────────────────────────────────────────────────────────────────
-      // Fisher-Yates shuffle — returns a new shuffled array
-      function shuffle(arr) {
-        const a = [...arr];
-        for (let i = a.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-      }
-
       async function loadAlgorithms() {
         try {
           const response = await fetch("algorithms.json");
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const data = await response.json();
           currentAlgorithm = data.v2;
-          // Shuffle only the non-bug steps — bugs will be removed as the student ticks them
-          algorithmSteps = shuffle(
-            currentAlgorithm.steps.filter((s) => !s.hasBug),
-          );
+          // Start with ALL steps in original order — bugs vanish as they are ticked
+          algorithmSteps = [...currentAlgorithm.steps];
           populateAlgorithm();
           createDraggableSteps();
         } catch (err) {
@@ -659,39 +648,29 @@
       // ─────────────────────────────────────────────────────────────────────────
       // Bug-spotting list (left panel)
       // ─────────────────────────────────────────────────────────────────────────
-
-      // Tracks ALL ticked steps (bugs and non-bugs alike)
-      let tickedSteps = new Set();
-
       function populateAlgorithm() {
         const list = document.getElementById("algorithm-list");
         list.innerHTML = currentAlgorithm.steps
           .map((step, index) => {
-            const isTicked = tickedSteps.has(step.id);
+            const isBugTicked = tickedBugs.has(step.id);
+            const isWrongTicked = wrongTicks.has(step.id);
+            const isTicked = isBugTicked || isWrongTicked;
 
-            // Determine highlight style
-            let rowStyle = "";
+            let rowStyle = "border:1px solid transparent;";
             let textClass = "";
             let labelIcon = "";
 
-            if (isTicked) {
-              if (step.hasBug) {
-                // Correct — green
-                rowStyle =
-                  "background-color:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);";
-                textClass = "step-bugged"; // strikethrough + dim
-                labelIcon =
-                  ' <span style="color:#4ade80;font-size:0.75rem;">✓ Bug!</span>';
-              } else {
-                // Wrong — red
-                rowStyle =
-                  "background-color:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);";
-                textClass = "";
-                labelIcon =
-                  ' <span style="color:#f87171;font-size:0.75rem;">✗ Not a bug</span>';
-              }
-            } else {
-              rowStyle = "border:1px solid transparent;";
+            if (isBugTicked) {
+              rowStyle =
+                "background-color:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.4);";
+              textClass = "step-bugged";
+              labelIcon =
+                ' <span style="color:#4ade80;font-size:0.75rem;">✓ Bug!</span>';
+            } else if (isWrongTicked) {
+              rowStyle =
+                "background-color:rgba(239,68,68,0.15);border:1px solid rgba(239,68,68,0.4);";
+              labelIcon =
+                ' <span style="color:#f87171;font-size:0.75rem;">✗ Not a bug</span>';
             }
 
             return `
@@ -701,7 +680,7 @@
                    style="${rowStyle}">
                 <input type="checkbox"
                        class="w-5 h-5 rounded pointer-events-none"
-                       style="accent-color:${isTicked && step.hasBug ? "#22c55e" : isTicked ? "#ef4444" : "#94a3b8"}"
+                       style="accent-color:${isBugTicked ? "#22c55e" : isWrongTicked ? "#ef4444" : "#94a3b8"}"
                        ${isTicked ? "checked" : ""}>
                 <span class="opacity-50 code-font">${index + 1}.</span>
                 <span class="${textClass}" style="color:#cbd5e1;">
@@ -713,33 +692,42 @@
       }
 
       // Toggle a step tick:
-      //   - Real bugs:     tick removes from drag area (green highlight), untick restores
-      //   - Non-bugs:      tick shows red "not a bug" feedback only, no drag area change
+      //   - Real bugs:  green highlight, removed from Fix It Zone; untick restores at original position
+      //   - Non-bugs:   red highlight only, Fix It Zone unaffected
       function toggleBug(stepId) {
         const step = currentAlgorithm.steps.find((s) => s.id === stepId);
         if (!step) return;
 
-        if (tickedSteps.has(stepId)) {
-          // Unticking
-          tickedSteps.delete(stepId);
-          foundBugs.delete(stepId);
-
-          if (step.hasBug) {
-            // Re-insert at the end — student can drag it to the right place
-            algorithmSteps.push(step);
-            createDraggableSteps();
-          }
-        } else {
-          // Ticking
-          tickedSteps.add(stepId);
-
-          if (step.hasBug) {
-            foundBugs.add(stepId);
-            // Remove from drag area
+        if (step.hasBug) {
+          if (tickedBugs.has(stepId)) {
+            // Untick — restore step to Fix It Zone at its original relative position
+            tickedBugs.delete(stepId);
+            const originalIndex = currentAlgorithm.steps.findIndex(
+              (s) => s.id === stepId,
+            );
+            let insertAt = algorithmSteps.length;
+            for (let i = originalIndex - 1; i >= 0; i--) {
+              const prevId = currentAlgorithm.steps[i].id;
+              const pos = algorithmSteps.findIndex((s) => s.id === prevId);
+              if (pos !== -1) {
+                insertAt = pos + 1;
+                break;
+              }
+            }
+            algorithmSteps.splice(insertAt, 0, step);
+          } else {
+            // Tick — remove from Fix It Zone
+            tickedBugs.add(stepId);
             algorithmSteps = algorithmSteps.filter((s) => s.id !== stepId);
-            createDraggableSteps();
           }
-          // Non-bugs: just highlight red, no drag area change
+          createDraggableSteps();
+        } else {
+          // Not a bug — just toggle the red highlight, no Fix It Zone change
+          if (wrongTicks.has(stepId)) {
+            wrongTicks.delete(stepId);
+          } else {
+            wrongTicks.add(stepId);
+          }
         }
 
         populateAlgorithm();
@@ -840,29 +828,25 @@
       function checkOrder() {
         const feedback = document.getElementById("feedback");
 
-        // Build the expected order: correctOrder filtered to only visible (non-bugged) steps
-        const expectedOrder = currentAlgorithm.correctOrder.filter(
-          (id) => !foundBugs.has(id),
-        );
-        const currentOrder = algorithmSteps.map((s) => s.id);
-
-        // If the student hasn't removed all bugs yet, warn them first
         const allBugsFound = currentAlgorithm.steps
           .filter((s) => s.hasBug)
-          .every((s) => foundBugs.has(s.id));
+          .every((s) => tickedBugs.has(s.id));
+
+        const expectedOrder = currentAlgorithm.correctOrder;
+        const currentOrder = algorithmSteps.map((s) => s.id);
 
         feedback.className = "mt-4 p-4 rounded-xl";
 
         if (!allBugsFound) {
+          const remaining = currentAlgorithm.steps.filter(
+            (s) => s.hasBug && !tickedBugs.has(s.id),
+          ).length;
           feedback.style.backgroundColor = "rgba(234,179,8,0.1)";
           feedback.style.border = "1px solid rgba(234,179,8,0.3)";
-          const remaining = currentAlgorithm.steps.filter(
-            (s) => s.hasBug && !foundBugs.has(s.id),
-          ).length;
           feedback.innerHTML = `
             <p style="color:#fcd34d"><strong>🐛 Not all bugs found yet!</strong></p>
             <p style="color:#94a3b8" class="text-sm mt-1">
-              There are still <strong style="color:#fcd34d">${remaining}</strong> bug${remaining !== 1 ? "s" : ""} hiding in the left panel. Find them first, then reorder!
+              There are still <strong style="color:#fcd34d">${remaining}</strong> bug${remaining !== 1 ? "s" : ""} hiding in the left panel. Find and tick them first!
             </p>`;
         } else if (
           JSON.stringify(currentOrder) === JSON.stringify(expectedOrder)
@@ -887,10 +871,11 @@
       }
 
       function resetOrder() {
-        // Re-shuffle the non-bugged steps so there's something to solve again
-        algorithmSteps = shuffle(
-          currentAlgorithm.steps.filter((s) => !foundBugs.has(s.id)),
-        );
+        // Restore all steps to original order, clear all ticks
+        tickedBugs = new Set();
+        wrongTicks = new Set();
+        algorithmSteps = [...currentAlgorithm.steps];
+        populateAlgorithm();
         createDraggableSteps();
         document.getElementById("feedback").classList.add("hidden");
       }
