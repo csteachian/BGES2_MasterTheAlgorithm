@@ -643,8 +643,10 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           const data = await response.json();
           currentAlgorithm = data.v2;
-          // Shuffle so the Fix It Zone isn't already in the right order
-          algorithmSteps = shuffle(currentAlgorithm.steps);
+          // Shuffle only the non-bug steps — bugs will be removed as the student ticks them
+          algorithmSteps = shuffle(
+            currentAlgorithm.steps.filter((s) => !s.hasBug),
+          );
           populateAlgorithm();
           createDraggableSteps();
         } catch (err) {
@@ -723,22 +725,8 @@
           foundBugs.delete(stepId);
 
           if (step.hasBug) {
-            // Re-insert into drag area at best relative position
-            const originalIndex = currentAlgorithm.steps.findIndex(
-              (s) => s.id === stepId,
-            );
-            let insertAt = algorithmSteps.length;
-            for (let i = originalIndex - 1; i >= 0; i--) {
-              const prevId = currentAlgorithm.steps[i].id;
-              const posInCurrent = algorithmSteps.findIndex(
-                (s) => s.id === prevId,
-              );
-              if (posInCurrent !== -1) {
-                insertAt = posInCurrent + 1;
-                break;
-              }
-            }
-            algorithmSteps.splice(insertAt, 0, step);
+            // Re-insert at the end — student can drag it to the right place
+            algorithmSteps.push(step);
             createDraggableSteps();
           }
         } else {
