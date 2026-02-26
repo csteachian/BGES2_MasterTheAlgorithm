@@ -656,7 +656,7 @@
               .replace("Buggy Algorithm v2 —", "Algorithm:");
 
           // Start with ALL steps in original order — bugs vanish as they are ticked
-          algorithmSteps = [...currentAlgorithm.steps];
+          algorithmSteps = shuffle([...currentAlgorithm.steps]);
           populateAlgorithm();
           createDraggableSteps();
         } catch (err) {
@@ -895,7 +895,7 @@
         // Restore all steps to original order, clear all ticks
         tickedBugs = new Set();
         wrongTicks = new Set();
-        algorithmSteps = [...currentAlgorithm.steps];
+        algorithmSteps = shuffle([...currentAlgorithm.steps]);
         populateAlgorithm();
         createDraggableSteps();
         document.getElementById("feedback").classList.add("hidden");
